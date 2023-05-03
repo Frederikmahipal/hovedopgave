@@ -2,16 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../view-prelogin/login_screen.dart';
 
-class HomePage extends StatelessWidget {
-  static const String id = 'home_screen';
 
-  final _auth = FirebaseAuth.instance;
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+ final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: const Text('Home Page'),
       ),
       body: Center(
         child: Text('Welcome to the Home Page!'),
@@ -24,6 +35,7 @@ class HomePage extends StatelessWidget {
         },
         child: Text('Logout'),
       ),
+      
     );
   }
 }
