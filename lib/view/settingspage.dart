@@ -7,7 +7,7 @@ class settingsPage extends StatefulWidget {
 }
 
 class _settingsPageState extends State<settingsPage> {
-  int _selectedIndex = 3;
+  int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
     setState(() {

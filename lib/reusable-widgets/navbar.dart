@@ -1,10 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CustomNavBar extends StatefulWidget {
   final int currentIndex;
   final void Function(int) onTap;
+  final User? user;
 
-  CustomNavBar({required this.currentIndex, required this.onTap});
+  CustomNavBar({
+    required this.currentIndex,
+    required this.onTap,
+    required this.user,
+  });
 
   @override
   _CustomNavBarState createState() => _CustomNavBarState();
@@ -31,5 +37,13 @@ class _CustomNavBarState extends State<CustomNavBar> {
         ),
       ],
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomNavBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.user != oldWidget.user) {
+      setState(() {});
+    }
   }
 }
