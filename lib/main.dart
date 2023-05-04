@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:hovedopgave_app/view-prelogin/login_screen.dart';
 import 'package:hovedopgave_app/view-prelogin/signup_screen.dart';
 import 'package:hovedopgave_app/view/homepage.dart';
-import 'package:hovedopgave_app/view/navbar.dart';
+import 'package:hovedopgave_app/reusable-widgets/navbar.dart';
 import 'package:hovedopgave_app/view/profilepage.dart';
 import 'package:hovedopgave_app/view/settingspage.dart';
 import 'firebase_options.dart';
