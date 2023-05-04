@@ -22,13 +22,7 @@ class _MyAppState extends State<MyApp> {
   User? _user;
 
   int _currentIndex = 0;
-
-  final List<Widget> _children = [
-    HomePage(),
-    ProfilePage(),
-    settingsPage(),
-  ];
-
+  
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -45,25 +39,47 @@ class _MyAppState extends State<MyApp> {
       print(_user);
     });
   }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hovedopgave - 2023',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: _user == null
-          ? LoginPage()
-          : Scaffold(
-              body: _children[_currentIndex],
-              bottomNavigationBar: CustomNavBar(
-                currentIndex: _currentIndex,
-                onTap: onTabTapped,
-                user: _user,
-              ),
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final User? user = snapshot.data;
+          return MaterialApp(
+            title: 'Hovedopgave - 2023',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
+            home: user == null
+                ? LoginScreen()
+                : Scaffold(
+                    body: _buildBody(),
+                    bottomNavigationBar: CustomNavBar(
+                      currentIndex: _currentIndex,
+                      onTap: onTabTapped,
+                      user: user,
+                    ),
+                  ),
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
+  }
+
+  Widget _buildBody() {
+    switch (_currentIndex) {
+      case 0:
+        return HomePage();
+      case 1:
+        return ProfilePage(userId: _user!.uid);
+      case 2:
+        return settingsPage();
+      default:
+        return HomePage();
+    }
   }
 }

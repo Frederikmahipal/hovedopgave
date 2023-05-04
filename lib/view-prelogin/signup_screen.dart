@@ -1,128 +1,85 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hovedopgave_app/view-prelogin/login_screen.dart';
-import '../view/homepage.dart';
+import 'package:flutter/material.dart';
+import '../repository/user_repository.dart';
 
-class SignUpScreen extends StatefulWidget {
+class signupScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignupScreenState extends State<signupScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
-  String _email = '';
-  String _password = '';
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _userRepository = UserRepository();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: const Text('Registration'),
       ),
-      body: Container(
-        padding: EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  icon: Icon(Icons.email),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    _email = value.trim();
-                  });
-                },
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
               ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  icon: Icon(Icons.lock),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    _password = value.trim();
-                  });
-                },
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your name';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    try {
-                      UserCredential userCredential =
-                          await _auth.createUserWithEmailAndPassword(
-                              email: _email, password: _password);
-                      // Add user to Firestore collection
-                      await _firestore
-                          .collection('user')
-                          .doc(userCredential.user!.uid)
-                          .set({
-                        'email': _email,
-                      }).then((value) {
-                        debugPrint('User added to Firestore successfully!');
-                      }).catchError((error) {
-                        debugPrint('Error adding user to Firestore: $error');
-                      });
-
-                      // Navigate to the home screen after successful sign-up
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'weak-password') {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text(
-                              'The password provided is too weak. Please choose a stronger password.'),
-                          backgroundColor: Colors.red.shade300,
-                        ));
-                      } else if (e.code == 'email-already-in-use') {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text(
-                              'The account already exists for that email.'),
-                          backgroundColor: Colors.red.shade300,
-                        ));
-                      }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text(
-                            'An error occurred while signing up. Please try again later.'),
-                        backgroundColor: Colors.red.shade300,
-                      ));
-                    }
-                  }
-                },
-                child: const Text('Sign Up'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your email';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Password',
               ),
-              SizedBox(height: 16),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => LoginPage())
-                  );
-                },
-                child: Text("Already have an account? Login here"))
-            ],
-          ),
+              obscureText: true,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Register'),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  try {
+                    UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    );
+                    User? user = result.user;
+                    await _userRepository.createUser(user!.uid, _nameController.text, _emailController.text);
+                    Navigator.pop(context);
+                  } catch (error) {
+                    print(error);
+                  }
+                }
+              },
+            ),
+          ],
         ),
       ),
     );

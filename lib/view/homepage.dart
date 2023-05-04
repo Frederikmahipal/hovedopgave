@@ -24,14 +24,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Welcome to the Home Page!'),
       ),
       floatingActionButton: ElevatedButton(
         onPressed: () async {
           await _auth.signOut();
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => LoginPage()));
+              MaterialPageRoute(builder: (context) => LoginScreen()));
         },
         child: Text('Logout'),
       ),
