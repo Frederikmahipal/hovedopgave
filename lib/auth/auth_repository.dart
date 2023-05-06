@@ -13,15 +13,6 @@ class AuthRepository {
     }
   }
 
-  Future<UserCredential?> signUpWithEmailAndPassword(String email, String password) async {
-    try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      return userCredential;
-    } catch (e) {
-      // Handle sign up errors here
-      return null;
-    }
-  }
 
   Future<void> signOut() async {
     await _auth.signOut();
