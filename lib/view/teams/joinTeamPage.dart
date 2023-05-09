@@ -2,6 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hovedopgave_app/repository/team_repository.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:hovedopgave_app/repository/team_repository.dart';
+
 class JoinTeamPage extends StatelessWidget {
   final TeamRepository _teamRepository = TeamRepository();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -33,6 +37,12 @@ class JoinTeamPage extends StatelessWidget {
                         if (teamId != null) {
                           String userId = _auth.currentUser?.uid ?? '';
                           await _teamRepository.joinTeam(teamId, userId);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('You have joined the team!'),
+                            ),
+                          );
+                          Navigator.pop(context);
                         }
                       },
                       child: Text('Join'),
@@ -53,3 +63,4 @@ class JoinTeamPage extends StatelessWidget {
     );
   }
 }
+

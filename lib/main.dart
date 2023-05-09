@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
       case 1:
         return ProfilePage(userId: _user!.uid);
       case 2:
-        return settingsPage();
+        return SettingsPage();
       default:
         return HomePage();
     }

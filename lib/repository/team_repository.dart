@@ -2,9 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-class TeamRepository {
 
-  
+class TeamRepository {
   final CollectionReference teamCollection =
       FirebaseFirestore.instance.collection('teams');
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -34,16 +33,19 @@ class TeamRepository {
     }
   }
 
-Future<void> joinTeam(String teamId, String userId) async {
-  await FirebaseFirestore.instance
-      .collection('teams')
-      .doc(teamId)
-      .collection('members')
-      .doc(userId)
-      .set({
-        'joinedAt': FieldValue.serverTimestamp(),
-      });
-}
+  Future<void> joinTeam(String teamId, String userId) async {
+    final teamDocRef =
+        FirebaseFirestore.instance.collection('teams').doc(teamId);
+
+    // Add the 'joinedAt' field to the document using 'set()' or 'update()'
+    await teamDocRef.set(
+        {'joinedAt': FieldValue.serverTimestamp()}, SetOptions(merge: true));
+
+    // Add the new member data to the 'members' array
+    await teamDocRef.update({
+      'members': FieldValue.arrayUnion([userId]),
+    });
+  }
 
   Future<Object? Function()?> getTeam(String teamName) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -58,18 +60,17 @@ Future<void> joinTeam(String teamId, String userId) async {
     }
   }
 
-Future<List<Map<String, dynamic>>> getAllTeams() async {
-  QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('teams').get();
-  List<Map<String, dynamic>> teams = [];
-  querySnapshot.docs.forEach((doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    data['teamId'] = doc.id;
-    teams.add(data);
-  });
-  return teams;
-}
-
+  Future<List<Map<String, dynamic>>> getAllTeams() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('teams').get();
+    List<Map<String, dynamic>> teams = [];
+    querySnapshot.docs.forEach((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      data['teamId'] = doc.id;
+      teams.add(data);
+    });
+    return teams;
+  }
 
   Future<bool> checkDuplicateTeamName(String teamName) async {
     final result = await FirebaseFirestore.instance
@@ -80,12 +81,20 @@ Future<List<Map<String, dynamic>>> getAllTeams() async {
     return result.docs.isNotEmpty;
   }
 
- Future<List<Map<String, dynamic>>> getTeamsForCurrentUser() async {
-  final user = _firebaseAuth.currentUser;
-  final teamsQuery = await teamCollection.where('members', arrayContains: user?.uid).get();
-  final teams = teamsQuery.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-  return teams;
-}
+  Future<List<Map<String, dynamic>>> getTeamsForUser(String userId) async {
+  final teamsQuery = FirebaseFirestore.instance.collection('teams');
+  final teamsQuerySnapshot = await teamsQuery.where('members', arrayContains: userId).get();
 
+  final List<Map<String, dynamic>> teamsList = [];
+  for (final teamDoc in teamsQuerySnapshot.docs) {
+    final teamData = teamDoc.data();
+    final membersQuery = await teamDoc.reference.collection('members').get();
+    final membersList = membersQuery.docs.map((doc) => doc.id).toList();
+    teamData['members'] = membersList;
+    teamsList.add(teamData);
+  }
+  print(teamsList);
+  return teamsList;
+}
 
 }
