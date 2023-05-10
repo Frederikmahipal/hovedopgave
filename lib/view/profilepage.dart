@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:hovedopgave_app/camera_controller.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:hovedopgave_app/repository/team_repository.dart';
 import 'package:hovedopgave_app/repository/user_repository.dart';
 import 'package:hovedopgave_app/view/teams/createTeamPage.dart';
@@ -7,6 +11,7 @@ import '../models/user.dart';
 
 class ProfilePage extends StatefulWidget {
   final String userId;
+  CameraController _cameraController = CameraController();
 
   ProfilePage({required this.userId});
 
@@ -17,6 +22,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final UserRepository _userRepository = UserRepository();
   final TeamRepository _teamRepository = TeamRepository();
+  final CameraController _cameraController = CameraController();
 
   int _selectedIndex = 1;
 
@@ -52,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(height: 8.0),
                 Text(
                   user.email,
-                  style:  TextStyle(
+                  style: TextStyle(
                     fontSize: 16.0,
                   ),
                 ),
@@ -69,6 +75,26 @@ class _ProfilePageState extends State<ProfilePage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          XFile? pickedImage =
+                              await _cameraController.pickImage();
+                          setState(() {
+                            _cameraController.profilePicture = pickedImage;
+                          });
+                        },
+                        child: Text('Pick Image'),
+                      ),
+                      if (_cameraController.profilePicture != null)
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Image.file(
+                            File(_cameraController.profilePicture!.path),
+                            width: 200.0,
+                            height: 200.0,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
