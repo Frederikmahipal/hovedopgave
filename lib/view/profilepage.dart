@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:hovedopgave_app/camera_controller.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:hovedopgave_app/repository/team_repository.dart';
 import 'package:hovedopgave_app/repository/user_repository.dart';
@@ -11,7 +11,7 @@ import '../models/user.dart';
 
 class ProfilePage extends StatefulWidget {
   final String userId;
-  CameraController _cameraController = CameraController();
+
 
   ProfilePage({required this.userId});
 
@@ -22,7 +22,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final UserRepository _userRepository = UserRepository();
   final TeamRepository _teamRepository = TeamRepository();
-  final CameraController _cameraController = CameraController();
 
   int _selectedIndex = 1;
 

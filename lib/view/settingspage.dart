@@ -3,11 +3,11 @@ import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hovedopgave_app/view/teams/joinTeamPage.dart';
 import 'package:hovedopgave_app/view/updatePage.dart';
 
 import '../view-prelogin/login_screen.dart';
 import 'teams/createTeamPage.dart';
+import 'teams/joinTeamPage.dart';
 
 class SettingsPage extends StatefulWidget {
   @override

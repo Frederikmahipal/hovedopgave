@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../repository/team_repository.dart';
 import '../view-prelogin/login_screen.dart';
-
-import 'teams/team_dashboard.dart';
+import '../view/teams/team_dashboard.dart';
 
 class HomePage extends StatefulWidget {
   @override
