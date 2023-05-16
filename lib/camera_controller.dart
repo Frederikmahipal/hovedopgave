@@ -17,6 +17,4 @@ class CameraController {
   }
 
   XFile? get profilePicture => _profilePicture;
-
-  
 }

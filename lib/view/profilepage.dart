@@ -95,26 +95,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateTeamPage()),
-                          );
-                        },
-                        child: Text('create team'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => JoinTeamPage()),
-                          );
-                        },
-                        child: Text('join team'),
-                      )
                     ],
                   ),
                 ),
