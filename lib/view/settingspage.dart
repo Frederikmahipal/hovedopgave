@@ -3,10 +3,11 @@ import 'package:flutter/src/widgets/placeholder.dart';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hovedopgave_app/view/teams/joinTeamPage.dart';
 import 'package:hovedopgave_app/view/updatePage.dart';
 
-
 import '../view-prelogin/login_screen.dart';
+import 'teams/createTeamPage.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -36,23 +37,36 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Text('Edit your info'),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-             Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UpdateProfilePage()),
-                          );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UpdateProfilePage()),
+              );
               // Handle option 1 tap
             },
           ),
           ListTile(
-            title: Text('Option 2'),
-            subtitle: Text('Description of option 2'),
+            title: Text('Create team'),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
               // Handle option 2 tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateTeamPage()),
+              );
             },
           ),
           // Add more ListTiles for other settings options
+          ListTile(
+            title: Text('Join team'),
+            trailing: Icon(Icons.arrow_forward_ios),
+            onTap: () {
+              // Handle option 2 tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => JoinTeamPage()),
+              );
+            },
+          ),
         ],
       ),
       bottomNavigationBar: BottomAppBar(

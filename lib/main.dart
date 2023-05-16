@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
                   ),
           );
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );

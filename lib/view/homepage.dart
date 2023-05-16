@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../repository/team_repository.dart';
 import '../view-prelogin/login_screen.dart';
 
+import 'teams/team_dashboard.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -10,14 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TeamRepository _teamRepository = TeamRepository();
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -26,7 +20,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
-     
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _teamRepository.getTeamsForUser(_auth.currentUser!.uid),
         builder: (context, snapshot) {
@@ -36,9 +29,19 @@ class _HomePageState extends State<HomePage> {
               itemCount: teamsList.length,
               itemBuilder: (context, index) {
                 final teamData = teamsList[index];
-                return ListTile(
-                  title: Text(teamData['teamName']),
-                  subtitle: Text(teamData['teamInfo']),
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TeamDashboard(teamData),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    title: Text(teamData['teamName']),
+                    subtitle: Text(teamData['teamInfo']),
+                  ),
                 );
               },
             );
@@ -56,4 +59,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

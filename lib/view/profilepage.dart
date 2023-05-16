@@ -75,46 +75,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          XFile? pickedImage =
-                              await _cameraController.pickImage();
-                          setState(() {
-                            _cameraController.profilePicture = pickedImage;
-                          });
-                        },
-                        child: Text('Pick Image'),
-                      ),
-                      if (_cameraController.profilePicture != null)
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 16.0),
-                          child: Image.file(
-                            File(_cameraController.profilePicture!.path),
-                            width: 200.0,
-                            height: 200.0,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateTeamPage()),
-                          );
-                        },
-                        child: Text('create team'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => JoinTeamPage()),
-                          );
-                        },
-                        child: Text('join team'),
-                      )
                     ],
                   ),
                 ),
