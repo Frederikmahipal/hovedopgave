@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:hovedopgave_app/repository/post_repository.dart';
 
 class AddPostScreen extends StatefulWidget {
-  
-  final Map<String, dynamic> teamData;
+  final String teamID;
 
-  AddPostScreen(this.teamData);
+  AddPostScreen(this.teamID);
 
   @override
   _AddPostScreenState createState() => _AddPostScreenState();
@@ -13,8 +13,9 @@ class AddPostScreen extends StatefulWidget {
 
 class _AddPostScreenState extends State<AddPostScreen> {
   final _formKey = GlobalKey<FormState>();
-  
-  String _message = '';
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
+  final _postRepository = PostRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +28,43 @@ class _AddPostScreenState extends State<AddPostScreen> {
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
+                controller: _titleController,
                 decoration: InputDecoration(
-                  labelText: 'Message',
+                  labelText: 'Title',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a message';
+                    return 'Please enter a title';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  setState(() {
-                    _message = value!;
-                  });
+              ),
+              TextFormField(
+                controller: _contentController,
+                decoration: InputDecoration(
+                  labelText: 'Content',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some content';
+                  }
+                  return null;
                 },
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    Navigator.pop(context, _message);
+                    final postData = {
+                      'title': _titleController.text,
+                      'content': _contentController.text,
+                      'createdAt': FieldValue.serverTimestamp(),
+                    };
+                    await _postRepository.createPost(widget.teamID, postData);
+                    Navigator.pop(context);
                   }
                 },
                 child: Text('Submit'),
@@ -62,3 +76,4 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 }
+

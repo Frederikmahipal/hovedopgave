@@ -91,10 +91,12 @@ class TeamRepository {
     final membersQuery = await teamDoc.reference.collection('members').get();
     final membersList = membersQuery.docs.map((doc) => doc.id).toList();
     teamData['members'] = membersList;
+    teamData['teamID'] = teamDoc.id; // Add the teamID field to the teamData map
     teamsList.add(teamData);
   }
   print(teamsList);
   return teamsList;
 }
+
 
 }
