@@ -30,10 +30,11 @@ class _TeamDashboardState extends State<TeamDashboard> {
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
                   final post = posts[index].data();
+                  final creatorId = post['creator'];
                   return ListTile(
-                    title: Text(post['title'] ?? ''),
-                    subtitle: Text(post['content'] ?? ''),
-                  );
+                      title: Text(post['title'] ?? ''),
+                      subtitle: Text(post['content'] ?? ''),
+                      trailing: Text(post['creator'] ?? ''));
                 },
               );
             } else {
