@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../repository/user_repository.dart';
+
+
 class UpdateProfilePage extends StatefulWidget {
   @override
   _UpdateProfilePageState createState() => _UpdateProfilePageState();
@@ -11,6 +14,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _userRepository = UserRepository();
 
   void _updateUser() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -26,6 +30,22 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Profile updated')),
         );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    }
+  }
+
+  void _deleteUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      try {
+        await _userRepository.deleteUser(uid);
+        await user.delete();
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.toString())),
@@ -84,6 +104,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   }
                 },
                 child: Text('Update'),
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  _deleteUser();
+                },
+                child: Text('Delete Account'),
               ),
             ],
           ),

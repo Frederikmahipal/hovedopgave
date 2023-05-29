@@ -18,7 +18,7 @@ class _TeamDashboardState extends State<TeamDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Team Dashboard'),
+        title: const Text('Team Dashboard'),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: widget.postRepository.getPostForCurrentTeam(widget.teamID),
@@ -31,14 +31,33 @@ class _TeamDashboardState extends State<TeamDashboard> {
                 itemBuilder: (context, index) {
                   final post = posts[index].data();
                   final creatorId = post['creator'];
-                  return ListTile(
-                      title: Text(post['title'] ?? ''),
-                      subtitle: Text(post['content'] ?? ''),
-                      trailing: Text(post['creator'] ?? ''));
+                  return FutureBuilder<DocumentSnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(creatorId)
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final creatorData =
+                            snapshot.data!.data() as Map<String, dynamic>;
+                        final creatorName = creatorData['name'] as String;
+
+                        return ListTile(
+                          title: Text(post['title'] ?? ''),
+                          subtitle: Text(post['content'] ?? ''),
+                          trailing: Text(creatorName),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  );
                 },
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text('No posts found.'),
               );
             }
@@ -47,7 +66,7 @@ class _TeamDashboardState extends State<TeamDashboard> {
               child: Text('Error: ${snapshot.error}'),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -62,7 +81,7 @@ class _TeamDashboardState extends State<TeamDashboard> {
             ),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

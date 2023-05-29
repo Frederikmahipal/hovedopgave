@@ -1,34 +1,31 @@
-import 'dart:ffi';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class User {
-  final String name;
+  final String uid;
   final String email;
+  final String name;
 
-  User({required this.name, required this.email});
+  User({required this.uid, required this.email, required this.name});
 
-  factory User.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<dynamic, dynamic>;
+  factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      name: data['name'],
-      email: data['email'],
+      uid: json['uid'] ?? '',
+      email: json['email'] ?? '',
+      name: json['name'] ?? '',
     );
   }
-}
 
-class MyFirestoreService {
-  final String uid;
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'email': email,
+      'name': name,
+    };
+  }
 
-  MyFirestoreService({required this.uid});
-
-  // Get user data from Firestore
-  Stream<User> get userData {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .snapshots()
-        .map((doc) => User.fromFirestore(doc));
+  @override
+  String toString() {
+    return 'User(uid: $uid, email: $email, name: $name)';
   }
 }
+

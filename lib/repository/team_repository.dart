@@ -81,6 +81,14 @@ class TeamRepository {
     return result.docs.isNotEmpty;
   }
 
+  Future<List<String>> getMembersOfTeam(String teamId) async {
+  final teamDocRef = FirebaseFirestore.instance.collection('teams').doc(teamId);
+  final membersQuerySnapshot = await teamDocRef.collection('members').get();
+  final List<String> membersList = membersQuerySnapshot.docs.map((doc) => doc.id).toList();
+  return membersList;
+}
+
+
   Future<List<Map<String, dynamic>>> getTeamsForUser(String userId) async {
   final teamsQuery = FirebaseFirestore.instance.collection('teams');
   final teamsQuerySnapshot = await teamsQuery.where('members', arrayContains: userId).get();
@@ -97,6 +105,5 @@ class TeamRepository {
   print(teamsList);
   return teamsList;
 }
-
 
 }

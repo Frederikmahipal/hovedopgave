@@ -31,8 +31,6 @@ Stream<QuerySnapshot<Map<String, dynamic>>> getPostForCurrentTeam(String teamID)
         toFirestore: (data, _) => data,
       )
       .snapshots();
-}
-
-
+ }
 }
 
