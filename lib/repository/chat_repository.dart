@@ -18,22 +18,30 @@ class ChatRepository {
   }
 
   Stream<List<Message>> getMessagesForChat(String chatId) {
-    return _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Message.fromSnapshot(doc)).toList());
-  }
+  print('Getting messages for chat $chatId');
+  return _firestore
+      .collection('chats')
+      .doc(chatId)
+      .collection('messages')
+      .orderBy('timestamp', descending: true)
+      .snapshots()
+      .map((QuerySnapshot querySnapshot) {
+    List<Message> messages = [];
+    querySnapshot.docs.forEach((DocumentSnapshot documentSnapshot) {
+      messages.add(Message.fromSnapshot(documentSnapshot));
+    });
+    print('Received ${messages.length} messages');
+    return messages;
+  });
+}
+
+
+
+
 
   Future<void> sendMessage(String chatId, String message, String sender) async {
-    final messageDoc = _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .doc();
+    final messageDoc =
+        _firestore.collection('chats').doc(chatId).collection('messages').doc();
     final messageData = {
       'id': messageDoc.id,
       'message': message,

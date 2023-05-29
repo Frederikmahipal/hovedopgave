@@ -19,35 +19,58 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('Chat ID: ${widget.chat.id}');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.chat.name),
       ),
       body: Column(
         children: [
+          Text('Chat page'), // Add this line
           Expanded(
-            child: StreamBuilder<List<Message>>(
-              stream: _chatRepository.getMessagesForChat(widget.chat.id),
-              builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    reverse: true,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      Message message = snapshot.data![index];
-                      return ListTile(
-                        title: Text(message.message),
-                        subtitle: Text(
-                          DateFormat('yyyy-MM-dd HH:mm:ss').format(message.timestamp),
-                        ),
-                        trailing: Text(message.sender),
-                      );
-                    },
-                  );
-                } else {
-                  return Container();
-                }
-              },
+            child: Container(
+              child: StreamBuilder<List<Message>>(
+                stream: _chatRepository.getMessagesForChat(widget.chat.id),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Message>> snapshot) {
+                  print('Snapshot: $snapshot');
+                  if (snapshot.hasData) {
+                    print('Received messages: ${snapshot.data}');
+                    return ListView.builder(
+                      reverse: true,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Message message = snapshot.data![index];
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 14),
+                          child: Align(
+                            alignment: message.sender == widget.chat.users[0]
+                                ? Alignment.topLeft
+                                : Alignment.topRight,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: message.sender == widget.chat.users[0]
+                                    ? Colors.grey.shade200
+                                    : Colors.blue[200],
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 14),
+                              child: Text(
+                                message.message, // Change this line
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
             ),
           ),
           Container(

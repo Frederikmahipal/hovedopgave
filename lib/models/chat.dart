@@ -51,12 +51,17 @@ class Message {
   });
 
   factory Message.fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>?;
+    if (data == null) {
+      throw Exception('Failed to load data from Firestore');
+    }
     return Message(
       id: snapshot.id,
-      message: snapshot['message'],
-      sender: snapshot['sender'],
-      timestamp: (snapshot['timestamp'] as Timestamp).toDate(),
-      chatId: snapshot['chatId'],
+      message: data['message'] as String? ?? '',
+      sender: data['sender'] as String? ?? '',
+      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      chatId: data['chatId'] as String? ?? '',
     );
   }
 }
+
