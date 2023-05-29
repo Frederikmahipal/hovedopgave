@@ -53,6 +53,17 @@ class UserRepository {
     return users;
   }
 
+  Future<MyUser.User?> getUserById(String uid) async {
+  final userDoc = await userCollection.doc(uid).get();
+  final userData = userDoc.data() as Map<String, dynamic>?;
+  if (userDoc.exists && userData != null) {
+    return MyUser.User.fromJson(userData);
+  } else {
+    return null;
+  }
+}
+
+
   Future<String> getUserNameById(String uid) async {
     final userDoc = await userCollection.doc(uid).get();
     final userData = userDoc.data() as Map<String, dynamic>?;

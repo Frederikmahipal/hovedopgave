@@ -39,17 +39,18 @@ class ChatRepository {
 
 
 
-  Future<void> sendMessage(String chatId, String message, String sender) async {
+  Future<void> sendMessage(String chatId, String message, String senderId) async {
     final messageDoc =
         _firestore.collection('chats').doc(chatId).collection('messages').doc();
     final messageData = {
       'id': messageDoc.id,
       'message': message,
-      'sender': sender,
+      'sender': senderId,
       'timestamp': FieldValue.serverTimestamp(),
     };
     await messageDoc.set(messageData);
   }
+
 
   Future<void> createChat(String name, List<String> users) async {
     final chatDoc = _chatCollection.doc();
