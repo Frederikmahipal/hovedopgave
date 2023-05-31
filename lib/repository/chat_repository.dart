@@ -36,6 +36,13 @@ class ChatRepository {
 }
 
 
+Future<String> deleteChat(String chatId) async {
+  await _firestore
+      .collection('chats')
+      .doc(chatId)
+      .delete();
+  return chatId;
+}
 
 
 

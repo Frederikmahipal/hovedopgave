@@ -40,29 +40,21 @@ class _ChatPageState extends State<ChatPage> {
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Message>> snapshot) {
                   if (snapshot.hasData) {
-                    final currentUser = _userRepository.getCurrentUser();
-                    return ListView.separated(
-                      separatorBuilder: (context, index) => Divider(
-                        thickness: 1,
-                        height: 1,
-                        color: Colors.grey[300],
-                      ),
-                      reverse: true,
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        Message message = snapshot.data![index];
-                        bool isCurrentUser = message.sender == currentUser?.uid;
-                        return ChatBubble(
-                          text: message.message,
-                          userIndex:
-                              widget.chat.users.indexOf(message.sender) == 0
-                                  ? 0
-                                  : 1,
-                          isCurrentUser: isCurrentUser,
-                          senderId: message.sender,
-                        );
-                      },
-                    );
+  return ListView.builder(
+    reverse: true,
+    itemCount: snapshot.data!.length,
+    itemBuilder: (BuildContext context, int index) {
+      Message message = snapshot.data![index];
+      bool isCurrentUser = message.sender ==
+          FirebaseAuth.instance.currentUser?.uid;
+      return ChatBubble(
+        text: message.message,
+        userIndex: isCurrentUser ? 0 : 1,
+        isCurrentUser: isCurrentUser,
+        senderId: message.sender,
+      );
+    },
+  );
                   } else {
                     return Container();
                   }
@@ -100,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
                 Material(
-                  elevation: 4,
+                  elevation: 0,
                   shape: CircleBorder(),
                   clipBehavior: Clip.hardEdge,
                   color: Colors.transparent,

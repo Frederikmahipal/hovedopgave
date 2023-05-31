@@ -1,17 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 class User {
   final String uid;
   final String email;
   final String name;
+  final bool isAdmin;
 
-  User({required this.uid, required this.email, required this.name});
+  User({required this.uid, required this.email, required this.name, required this.isAdmin});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       uid: json['uid'] ?? '',
       email: json['email'] ?? '',
       name: json['name'] ?? '',
+      isAdmin: json['isAdmin'] ?? false,
     );
   }
 
@@ -20,12 +20,12 @@ class User {
       'uid': uid,
       'email': email,
       'name': name,
+      'isAdmin': isAdmin,
     };
   }
 
   @override
   String toString() {
-    return 'User(uid: $uid, email: $email, name: $name)';
+    return 'User(uid: $uid, email: $email, name: $name, isAdmin: $isAdmin)';
   }
 }
-

@@ -14,6 +14,7 @@ class UserRepository {
     'uid': uid,
     'name': name,
     'email': email,
+    'isAdmin': false,
   });
 }
 
@@ -54,15 +55,24 @@ class UserRepository {
   }
 
   Future<MyUser.User?> getUserById(String uid) async {
-  final userDoc = await userCollection.doc(uid).get();
-  final userData = userDoc.data() as Map<String, dynamic>?;
-  if (userDoc.exists && userData != null) {
-    return MyUser.User.fromJson(userData);
-  } else {
-    return null;
+    final userDoc = await userCollection.doc(uid).get();
+    final userData = userDoc.data() as Map<String, dynamic>?;
+    if (userDoc.exists && userData != null) {
+      return MyUser.User.fromJson(userData);
+    } else {
+      return null;
+    }
   }
-}
 
+  Future<bool> getUserRole(String uid) async {
+    final userDoc = await userCollection.doc(uid).get();
+    final userData = userDoc.data() as Map<String, dynamic>?;
+    if (userDoc.exists && userData != null && userData.containsKey('isAdmin')) {
+      return userData['isAdmin'];
+    } else {
+      return false;
+    }
+  }
 
   Future<String> getUserNameById(String uid) async {
     final userDoc = await userCollection.doc(uid).get();

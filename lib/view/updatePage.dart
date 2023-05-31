@@ -50,6 +50,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.toString())),
         );
+        
       }
     }
   }
@@ -112,6 +113,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 },
                 child: Text('Delete Account'),
               ),
+
             ],
           ),
         ),
