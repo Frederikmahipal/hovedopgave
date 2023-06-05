@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(
                         builder: (context) => TeamDashboard(
                           teamData['teamID'],
-                          postRepository: _postRepository,
+                          postRepository: _postRepository, teamRepository: _teamRepository,
                         ),
                       ),
                     );

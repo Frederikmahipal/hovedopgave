@@ -51,6 +51,7 @@ dependencies:
   flutter_chat_ui: ^1.6.6
   chat_bubble: ^0.1.1+3
   flutter_swiper: ^1.1.6
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

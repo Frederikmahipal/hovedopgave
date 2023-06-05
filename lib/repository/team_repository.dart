@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-
 class TeamRepository {
   final CollectionReference teamCollection =
       FirebaseFirestore.instance.collection('teams');
@@ -36,14 +35,17 @@ class TeamRepository {
   Future<void> joinTeam(String teamId, String userId) async {
     final teamDocRef =
         FirebaseFirestore.instance.collection('teams').doc(teamId);
+    final userDocRef =
+        FirebaseFirestore.instance.collection('users').doc(userId);
 
-    // Add the 'joinedAt' field to the document using 'set()' or 'update()'
+    // Add the 'joinedAt' field to the team document using 'set()' or 'update()'
     await teamDocRef.set(
         {'joinedAt': FieldValue.serverTimestamp()}, SetOptions(merge: true));
 
-    // Add the new member data to the 'members' array
-    await teamDocRef.update({
-      'members': FieldValue.arrayUnion([userId]),
+    // Create a new document in the 'members' subcollection for the user
+    await teamDocRef.collection('members').doc(userId).set({
+      'userRef': userDocRef,
+      'joinedAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -82,28 +84,32 @@ class TeamRepository {
   }
 
   Future<List<String>> getMembersOfTeam(String teamId) async {
-  final teamDocRef = FirebaseFirestore.instance.collection('teams').doc(teamId);
-  final membersQuerySnapshot = await teamDocRef.collection('members').get();
-  final List<String> membersList = membersQuerySnapshot.docs.map((doc) => doc.id).toList();
-  return membersList;
-}
+    final teamDocRef =
+        FirebaseFirestore.instance.collection('teams').doc(teamId);
+    final membersQuerySnapshot = await teamDocRef.collection('members').get();
+    final List<String> membersList =
+        membersQuerySnapshot.docs.map((doc) => doc.id).toList();
+    return membersList;
+  }
 
-
-  Future<List<Map<String, dynamic>>> getTeamsForUser(String userId) async {
-  final teamsQuery = FirebaseFirestore.instance.collection('teams');
-  final teamsQuerySnapshot = await teamsQuery.where('members', arrayContains: userId).get();
+  Future<List<Map<String, dynamic>>> getTeamsForUser(String memberId) async {
+  final teamsQuerySnapshot = await FirebaseFirestore.instance
+      .collectionGroup('members')
+      .where('userRef', isEqualTo: FirebaseFirestore.instance.doc('users/$memberId'))
+      .get();
 
   final List<Map<String, dynamic>> teamsList = [];
-  for (final teamDoc in teamsQuerySnapshot.docs) {
-    final teamData = teamDoc.data();
-    final membersQuery = await teamDoc.reference.collection('members').get();
-    final membersList = membersQuery.docs.map((doc) => doc.id).toList();
-    teamData['members'] = membersList;
-    teamData['teamID'] = teamDoc.id; // Add the teamID field to the teamData map
+  for (final memberDoc in teamsQuerySnapshot.docs) {
+    final teamDocRef = memberDoc.reference.parent.parent;
+    final teamDocSnapshot = await teamDocRef!.get();
+    final teamData = teamDocSnapshot.data();
+    final teamId = teamDocSnapshot.id;
+    teamData!['teamID'] = teamId;
     teamsList.add(teamData);
   }
-  print(teamsList);
+
   return teamsList;
 }
+
 
 }

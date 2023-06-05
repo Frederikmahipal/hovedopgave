@@ -15,22 +15,61 @@ class PostRepository {
         .add(postData);
   }
 
-Stream<QuerySnapshot<Map<String, dynamic>>> getPostForCurrentTeam(String teamID) {
-  return FirebaseFirestore.instance
+  Future<void> addComment(String teamID, String postID, Map<String, dynamic> commentData, String creatorName) async {
+  final user = FirebaseAuth.instance.currentUser;
+  commentData['user'] = user!.uid;
+  
+  // Use serverTimestamp() instead of Timestamp.now()
+  commentData['timestamp'] = FieldValue.serverTimestamp();
+
+  final postRef = FirebaseFirestore.instance
       .collection('teams')
       .doc(teamID)
       .collection('posts')
-      .withConverter<Map<String, dynamic>>(
-        fromFirestore: (snapshot, _) {
-          final postData = snapshot.data()!;
-          final creatorID = postData['creator'];
-          final creatorRef = FirebaseFirestore.instance.collection('users').doc(creatorID);
-          final creatorData = creatorRef.get().then((doc) => doc.data() as Map<String, dynamic>?);
-          return postData..addAll({'creatorData': creatorData});
-        },
-        toFirestore: (data, _) => data,
-      )
-      .snapshots();
- }
+      .doc(postID);
+  final commentsRef = postRef.collection('comments');
+  await commentsRef.add(commentData);
 }
 
+
+
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getPostForCurrentTeam(String teamID) {
+    return FirebaseFirestore.instance
+        .collection('teams')
+        .doc(teamID)
+        .collection('posts')
+        .withConverter<Map<String, dynamic>>(
+          fromFirestore: (snapshot, _) {
+            final postData = snapshot.data()!;
+            final creatorID = postData['creator'];
+            final creatorRef = FirebaseFirestore.instance.collection('users').doc(creatorID);
+            final creatorData = creatorRef.get().then((doc) => doc.data() as Map<String, dynamic>?);
+            return postData..addAll({'creatorData': creatorData});
+          },
+          toFirestore: (data, _) => data,
+        )
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCommentsForPost(String teamID, String postID) {
+    final postRef = FirebaseFirestore.instance
+        .collection('teams')
+        .doc(teamID)
+        .collection('posts')
+        .doc(postID);
+    final commentsRef = postRef.collection('comments');
+    return commentsRef.orderBy('timestamp', descending: true).snapshots();
+  }
+
+  Future<void> deleteCommentFromPost(String teamID, String postID, String commentID) async {
+    await _firestore
+        .collection('teams')
+        .doc(teamID)
+        .collection('posts')
+        .doc(postID)
+        .collection('comments')
+        .doc(commentID)
+        .delete();
+  }
+}
