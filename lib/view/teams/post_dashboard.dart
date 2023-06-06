@@ -24,8 +24,8 @@ class PostDashboard extends StatefulWidget {
 }
 
 class _PostDashboardState extends State<PostDashboard> {
-  final _commentController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _commentController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -35,13 +35,14 @@ class _PostDashboardState extends State<PostDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final postRepository = PostRepository();
+    final PostRepository postRepository = PostRepository();
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.postTitle)),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Display post content and creator name
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -56,7 +57,11 @@ class _PostDashboardState extends State<PostDashboard> {
             ),
           ),
           SizedBox(height: 16),
-          Text('Add Comment', style: Theme.of(context).textTheme.headline6),
+          // Form to add comments
+          Text(
+            'Add Comment',
+            style: Theme.of(context).textTheme.headline6,
+          ),
           Form(
             key: _formKey,
             child: TextFormField(
@@ -65,7 +70,7 @@ class _PostDashboardState extends State<PostDashboard> {
                 border: OutlineInputBorder(),
                 hintText: 'Enter your comment',
               ),
-              validator: (value) {
+              validator: (String? value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a comment';
                 }
@@ -74,29 +79,39 @@ class _PostDashboardState extends State<PostDashboard> {
             ),
           ),
           SizedBox(height: 16),
+          // Submit button to add comments
           ElevatedButton(
             child: Text('Submit'),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                final commentData = {
+                final Map<String, dynamic> commentData = {
                   'text': _commentController.text.trim(),
                 };
-                await postRepository.addComment(
-                  widget.teamID,
-                  widget.postID,
-                  commentData,
-                  widget.creatorName,
-                );
-                _commentController.clear();
+                try {
+                  await postRepository.addComment(
+                    widget.teamID,
+                    widget.postID,
+                    commentData,
+                    widget.creatorName,
+                  );
+                  _commentController.clear();
+                } catch (e) {
+                  print('Error adding comment: $e');
+                }
               }
             },
           ),
           SizedBox(height: 16),
-          Text('Comments', style: Theme.of(context).textTheme.headline6),
+          Text(
+            'Comments',
+            style: Theme.of(context).textTheme.headline6,
+          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: postRepository.getCommentsForPost(widget.teamID, widget.postID),
-              builder: (context, snapshot) {
+              stream: postRepository.getCommentsForPost(
+                  widget.teamID, widget.postID),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 }
@@ -105,14 +120,24 @@ class _PostDashboardState extends State<PostDashboard> {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                final comments = snapshot.data!.docs;
+                final List<QueryDocumentSnapshot<Map<String, dynamic>>>
+                    comments = snapshot.data!.docs;
                 return ListView.builder(
                   itemCount: comments.length,
-                  itemBuilder: (context, index) {
-                    final comment = comments[index].data();
-                    final timestamp = comment['timestamp'] as Timestamp;
-                    final dateTime = timestamp.toDate();
-                    final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+                  itemBuilder: (BuildContext context, int index) {
+                    final Map<String, dynamic> comment = comments[index].data();
+                    final Timestamp? timestamp =
+                        comment['timestamp'] as Timestamp?;
+                    final DateTime? dateTime = timestamp?.toDate();
+                    String formattedDateTime = '';
+                    if (dateTime != null) {
+                      try {
+                        formattedDateTime =
+                            DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+                      } catch (e) {
+                        print('Error formatting timestamp: $e');
+                      }
+                    }
                     return Card(
                       child: ListTile(
                         leading: Icon(Icons.comment),
@@ -127,7 +152,10 @@ class _PostDashboardState extends State<PostDashboard> {
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () async {
-                            await postRepository.deleteCommentFromPost(widget.teamID, widget.postID, comment['id'] as String);
+                            await postRepository.deleteCommentFromPost(
+                                widget.teamID,
+                                widget.postID,
+                                comment['id'] as String);
                           },
                         ),
                       ),

@@ -16,20 +16,20 @@ class PostRepository {
   }
 
   Future<void> addComment(String teamID, String postID, Map<String, dynamic> commentData, String creatorName) async {
-  final user = FirebaseAuth.instance.currentUser;
-  commentData['user'] = user!.uid;
-  
-  // Use serverTimestamp() instead of Timestamp.now()
-  commentData['timestamp'] = FieldValue.serverTimestamp();
-
-  final postRef = FirebaseFirestore.instance
-      .collection('teams')
-      .doc(teamID)
-      .collection('posts')
-      .doc(postID);
-  final commentsRef = postRef.collection('comments');
-  await commentsRef.add(commentData);
+  final postRef = FirebaseFirestore.instance.collection('teams/$teamID/posts').doc(postID);
+  final commentRef = postRef.collection('comments').doc();
+  final commentID = commentRef.id;
+  final commentWithID = {...commentData, 'id': commentID, 'user': creatorName, 'timestamp': FieldValue.serverTimestamp()};
+  try {
+    await commentRef.set(commentWithID);
+    await postRef.update({'comments': FieldValue.arrayUnion([commentRef.id])});
+  } catch (e) {
+    print('Error adding comment: $e');
+    rethrow;
+  }
 }
+
+
 
 
 
