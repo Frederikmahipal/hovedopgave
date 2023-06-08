@@ -59,7 +59,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Profile'),
+        title: Text('Opdater profil'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -71,12 +71,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Name',
-                  hintText: 'Enter your name',
+                  labelText: 'Navn',
+                  hintText: 'Indtast dit navn',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Indtast dit navn';
                   }
                   return null;
                 },
@@ -85,14 +85,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  hintText: 'Enter your email',
+                  hintText: 'Indtast din email',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return 'Email';
                   }
                   if (!value.contains('@')) {
-                    return 'Please enter a valid email address';
+                    return 'Email ikke gyldig';
                   }
                   return null;
                 },
@@ -104,14 +104,14 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                     _updateUser();
                   }
                 },
-                child: Text('Update'),
+                child: Text('Opdater'),
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   _deleteUser();
                 },
-                child: Text('Delete Account'),
+                child: Text('Slet konto'),
               ),
 
             ],

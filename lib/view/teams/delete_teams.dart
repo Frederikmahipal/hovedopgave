@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hovedopgave_app/repository/team_repository.dart';
 
-class JoinTeamPage extends StatelessWidget {
+class DeleteTeamPage extends StatelessWidget {
   final TeamRepository _teamRepository = TeamRepository();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -14,7 +14,7 @@ class JoinTeamPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tilmeld hold'),
+        title: Text('Slet hold'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _teamRepository.getAllTeams(),
@@ -36,16 +36,16 @@ class JoinTeamPage extends StatelessWidget {
                             snapshot.data?[index]?['teamId'] as String?;
                         if (teamId != null) {
                           String userId = _auth.currentUser?.uid ?? '';
-                          await _teamRepository.joinTeam(teamId, userId);
+                          await _teamRepository.deleteTeam(teamId);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Du er tilmeldt holdet!'),
+                              content: Text('hold slettet'),
                             ),
                           );
                           Navigator.pop(context);
                         }
                       },
-                      child: Text('tilmeld'),
+                      child: Text('slet'),
                     ));
               },
             );
@@ -55,7 +55,7 @@ class JoinTeamPage extends StatelessWidget {
             );
           } else {
             return Center(
-              child: Text('Ingen hold fundet'),
+              child: Text('ingen hold fundet'),
             );
           }
         },

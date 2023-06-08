@@ -30,7 +30,7 @@ class _TeamDashboardState extends State<TeamDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Team Dashboard'),
+        title: const Text('Hold info'),
         actions: [
           IconButton(
             icon: const Icon(Icons.people),
@@ -45,59 +45,56 @@ class _TeamDashboardState extends State<TeamDashboard> {
             final posts = snapshot.data!.docs;
             if (posts.isNotEmpty) {
               return ListView.builder(
-  itemCount: posts.length,
-  itemBuilder: (context, index) {
-    final post = posts[index].data();
-    final creatorId = post['creator'];
-    final teamId = post['teamId'];
-    final postId = posts[index].id;
-    return FutureBuilder<DocumentSnapshot>(
-      future: FirebaseFirestore.instance
-        .collection('users')
-        .doc(creatorId)
-        .get(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final creatorData =
-            snapshot.data!.data() as Map<String, dynamic>;
-          final creatorName = creatorData['name'] as String;
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  final post = posts[index].data();
+                  final creatorId = post['creator'];
+                  final teamId = post['teamId'];
+                  final postId = posts[index].id;
+                  return FutureBuilder<DocumentSnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(creatorId)
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final creatorData =
+                            snapshot.data!.data() as Map<String, dynamic>;
+                        final creatorName = creatorData['name'] as String;
 
-          return InkWell(
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostDashboard(
-          teamID: widget.teamID,
-          postID: postId,
-          postTitle: post['title'] ?? '',
-          postContent: post['content'] ?? '',
-          creatorName: creatorName,
-        ),
-      ),
-    );
-  },
-  child: ListTile(
-    title: Text(post['title'] ?? ''),
-    subtitle: Text(post['content'] ?? ''),
-    trailing: Text(creatorName),
-  ),
-);
-
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return CircularProgressIndicator();
-        }
-      },
-    );
-  },
-);
-
-
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PostDashboard(
+                                  teamID: widget.teamID,
+                                  postID: postId,
+                                  postTitle: post['title'] ?? '',
+                                  postContent: post['content'] ?? '',
+                                  creatorName: creatorName,
+                                ),
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            title: Text(post['title'] ?? ''),
+                            subtitle: Text(post['content'] ?? ''),
+                            trailing: Text(creatorName),
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  );
+                },
+              );
             } else {
               return const Center(
-                child: Text('No posts found.'),
+                child: Text('Ingen opslag endnu. Tryk på + for at lave et.'),
               );
             }
           } else if (snapshot.hasError) {
@@ -134,9 +131,9 @@ class _TeamDashboardState extends State<TeamDashboard> {
           final memberIds = snapshot.data!;
           return Container(
             height:
-                MediaQuery.of(context).size.height * 0.7, // adjust the height
+                MediaQuery.of(context).size.height * 0.7,
             decoration: const BoxDecoration(
-              color: Colors.white, // add a background color
+              color: Colors.white, 
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(16),
@@ -145,7 +142,7 @@ class _TeamDashboardState extends State<TeamDashboard> {
             child: Column(
               children: [
                 ListTile(
-                  title: Text('Team Members'),
+                  title: Text('Medlemmer'),
                   trailing: IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: _toggleMembers,

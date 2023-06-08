@@ -18,7 +18,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Team'),
+        title: const Text('Opret hold'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -29,11 +29,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
             children: [
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Team Name',
+                  labelText: 'Hold navn',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a team name';
+                    return 'Indtast hold navn';
                   }
                   return null;
                 },
@@ -43,11 +43,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Team Info',
+                  labelText: 'Hold info',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter team info';
+                    return 'indtast hold info';
                   }
                   return null;
                 },
@@ -67,18 +67,18 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
 
                         if (teamCreated) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Team created')),
+                            const SnackBar(content: Text('Hold oprettet')),
                           );
                           Navigator.pop(context);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text('Team name already exists')),
+                                content: Text('Holdet eksisterer allerede')),
                           );
                         }
                       }
                     },
-                    child: const Text('Create Team'),
+                    child: const Text('Opret hold'),
                   )),
             ],
           ),

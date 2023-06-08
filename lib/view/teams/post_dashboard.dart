@@ -42,7 +42,6 @@ class _PostDashboardState extends State<PostDashboard> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Display post content and creator name
           Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -51,28 +50,24 @@ class _PostDashboardState extends State<PostDashboard> {
                 children: [
                   Text(widget.postContent),
                   SizedBox(height: 16),
-                  Text('Created by: ${widget.creatorName}'),
+                  Text('${widget.creatorName}'),
                 ],
               ),
             ),
           ),
           SizedBox(height: 16),
           // Form to add comments
-          Text(
-            'Add Comment',
-            style: Theme.of(context).textTheme.headline6,
-          ),
           Form(
             key: _formKey,
             child: TextFormField(
               controller: _commentController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Enter your comment',
+                hintText: 'Indtast kommentar',
               ),
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a comment';
+                  return 'Indtast kommentar';
                 }
                 return null;
               },
@@ -81,7 +76,7 @@ class _PostDashboardState extends State<PostDashboard> {
           SizedBox(height: 16),
           // Submit button to add comments
           ElevatedButton(
-            child: Text('Submit'),
+            child: Text('Tilføj'),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 final Map<String, dynamic> commentData = {
@@ -101,11 +96,7 @@ class _PostDashboardState extends State<PostDashboard> {
               }
             },
           ),
-          SizedBox(height: 16),
-          Text(
-            'Comments',
-            style: Theme.of(context).textTheme.headline6,
-          ),
+    
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: postRepository.getCommentsForPost(

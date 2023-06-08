@@ -21,7 +21,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Post'),
+        title: Text('Tilføj opslag'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -33,11 +33,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
               TextFormField(
                 controller: _titleController,
                 decoration: InputDecoration(
-                  labelText: 'Title',
+                  labelText: 'Titel',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
+                    return 'Indtast titel';
                   }
                   return null;
                 },
@@ -45,11 +45,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
               TextFormField(
                 controller: _contentController,
                 decoration: InputDecoration(
-                  labelText: 'Content',
+                  labelText: 'Indhold',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter some content';
+                    return 'Indtast indhold';
                   }
                   return null;
                 },
@@ -67,7 +67,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text('Submit'),
+                child: Text('Opret'),
               ),
             ],
           ),

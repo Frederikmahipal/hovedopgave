@@ -28,8 +28,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person_outlined),
-          label: 'Profile',
+          icon: Icon(Icons.chat_rounded),
+          label: 'chat',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),

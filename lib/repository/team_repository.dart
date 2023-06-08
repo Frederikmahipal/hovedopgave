@@ -38,29 +38,16 @@ class TeamRepository {
     final userDocRef =
         FirebaseFirestore.instance.collection('users').doc(userId);
 
-    // Add the 'joinedAt' field to the team document using 'set()' or 'update()'
     await teamDocRef.set(
         {'joinedAt': FieldValue.serverTimestamp()}, SetOptions(merge: true));
 
-    // Create a new document in the 'members' subcollection for the user
     await teamDocRef.collection('members').doc(userId).set({
       'userRef': userDocRef,
       'joinedAt': FieldValue.serverTimestamp(),
     });
   }
 
-  Future<Object? Function()?> getTeam(String teamName) async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('teams')
-        .where('name', isEqualTo: teamName)
-        .get();
-    if (querySnapshot.docs.isEmpty) {
-      return null;
-    } else {
-      DocumentSnapshot teamDoc = querySnapshot.docs[0];
-      return teamDoc.data;
-    }
-  }
+ 
 
   Future<List<Map<String, dynamic>>> getAllTeams() async {
     QuerySnapshot querySnapshot =
@@ -101,14 +88,34 @@ class TeamRepository {
   final List<Map<String, dynamic>> teamsList = [];
   for (final memberDoc in teamsQuerySnapshot.docs) {
     final teamDocRef = memberDoc.reference.parent.parent;
-    final teamDocSnapshot = await teamDocRef!.get();
-    final teamData = teamDocSnapshot.data();
-    final teamId = teamDocSnapshot.id;
-    teamData!['teamID'] = teamId;
-    teamsList.add(teamData);
+    if (teamDocRef != null) {
+      final teamDocSnapshot = await teamDocRef.get();
+      final teamData = teamDocSnapshot.data();
+      if (teamData != null) {
+        final teamId = teamDocSnapshot.id;
+        teamData['teamID'] = teamId;
+        teamsList.add(teamData);
+      }
+    }
   }
 
   return teamsList;
+}
+
+
+
+
+Future<bool> deleteTeam(String teamId) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection('teams')
+        .doc(teamId)
+        .delete();
+    return true;
+  } catch (e) {
+    print('Error deleting team: $e');
+    return false;
+  }
 }
 
 

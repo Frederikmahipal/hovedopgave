@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chats'),
+        title: const Text('Dine chats'),
       ),
       body: StreamBuilder<List<Chat>>(
         stream: _chatRepository.getChatsForUser(widget.userId),
