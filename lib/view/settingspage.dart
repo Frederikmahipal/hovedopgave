@@ -21,28 +21,12 @@ class _SettingsPageState extends State<SettingsPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final AuthRepository _authRepository = AuthRepository();
   int selectedIndex = 2;
-  bool _isAdmin = false; // Move the variable definition to the class level
+  bool _isAdmin = false; 
 
   @override
   void initState() {
     super.initState();
     _fetchCurrentUserData();
-  }
-
-  Future<void> _fetchCurrentUserData() async {
-    final userId = _auth.currentUser?.uid;
-    if (userId != null) {
-      _isAdmin = await UserRepository()
-          .getUserRole(userId); // Remove the bool type declaration here
-      setState(() {});
-    }
-  }
-
-  void _logout() async {
-    await _auth.signOut();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
   }
 
   @override
@@ -61,7 +45,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 context,
                 MaterialPageRoute(builder: (context) => UpdateProfilePage()),
               );
-              // Handle option 1 tap
             },
           ),
           Visibility(
@@ -114,4 +97,16 @@ class _SettingsPageState extends State<SettingsPage> {
       )),
     );
   }
+
+
+Future<void> _fetchCurrentUserData() async {
+    final userId = _auth.currentUser?.uid;
+    if (userId != null) {
+      _isAdmin = await UserRepository()
+          .getUserRole(userId); 
+      setState(() {});
+    }
+  }
+
 }
+

@@ -108,6 +108,8 @@ class _TeamDashboardState extends State<TeamDashboard> {
           }
         },
       ),
+      
+      bottomSheet: _showMembers ? _buildMembersSheet(context) : null,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -119,7 +121,6 @@ class _TeamDashboardState extends State<TeamDashboard> {
         },
         child: const Icon(Icons.add),
       ),
-      bottomSheet: _showMembers ? _buildMembersSheet(context) : null,
     );
   }
 

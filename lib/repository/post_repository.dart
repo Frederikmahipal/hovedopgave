@@ -29,11 +29,6 @@ class PostRepository {
   }
 }
 
-
-
-
-
-
   Stream<QuerySnapshot<Map<String, dynamic>>> getPostForCurrentTeam(String teamID) {
     return FirebaseFirestore.instance
         .collection('teams')
@@ -43,7 +38,7 @@ class PostRepository {
           fromFirestore: (snapshot, _) {
             final postData = snapshot.data()!;
             final creatorID = postData['creator'];
-            final creatorRef = FirebaseFirestore.instance.collection('users').doc(creatorID);
+             final creatorRef = FirebaseFirestore.instance.collection('users').doc(creatorID);
             final creatorData = creatorRef.get().then((doc) => doc.data() as Map<String, dynamic>?);
             return postData..addAll({'creatorData': creatorData});
           },

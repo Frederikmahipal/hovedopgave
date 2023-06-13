@@ -18,7 +18,6 @@ class UserRepository {
   });
 }
 
-
   Future<void> updateUser(String uid, String name, String email) async {
     await userCollection.doc(uid).update({
       'name': name,
@@ -74,6 +73,15 @@ class UserRepository {
     }
   }
 
+    Future<List<String>> getUserNames(List<String> userIds) async {
+    List<String> userNames = [];
+    for (String userId in userIds) {
+      String userName = await getUserNameById(userId);
+      userNames.add(userName);
+    }
+    return userNames;
+  }
+
   Future<String> getUserNameById(String uid) async {
     final userDoc = await userCollection.doc(uid).get();
     final userData = userDoc.data() as Map<String, dynamic>?;
@@ -83,6 +91,8 @@ class UserRepository {
       return '';
     }
   }
+
+  
 
   String? getSelectedUserId() {
     return _selectedUserId;

@@ -22,7 +22,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('Chat ID: ${widget.chat.id}');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.chat.name),
@@ -31,7 +30,7 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 12,
               ),
@@ -40,21 +39,21 @@ class _ChatPageState extends State<ChatPage> {
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Message>> snapshot) {
                   if (snapshot.hasData) {
-  return ListView.builder(
-    reverse: true,
-    itemCount: snapshot.data!.length,
-    itemBuilder: (BuildContext context, int index) {
-      Message message = snapshot.data![index];
-      bool isCurrentUser = message.sender ==
-          FirebaseAuth.instance.currentUser?.uid;
-      return ChatBubble(
-        text: message.message,
-        userIndex: isCurrentUser ? 0 : 1,
-        isCurrentUser: isCurrentUser,
-        senderId: message.sender,
-      );
-    },
-  );
+                    return ListView.builder(
+                      reverse: true,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Message message = snapshot.data![index];
+                        bool isCurrentUser = message.sender ==
+                            FirebaseAuth.instance.currentUser?.uid;
+                        return ChatBubble(
+                          text: message.message,
+                          userIndex: isCurrentUser ? 0 : 1,
+                          isCurrentUser: isCurrentUser,
+                          senderId: message.sender,
+                        );
+                      },
+                    );
                   } else {
                     return Container();
                   }
@@ -63,7 +62,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(20),
@@ -79,7 +78,7 @@ class _ChatPageState extends State<ChatPage> {
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                         vertical: 10,
                         horizontal: 16,
                       ),
@@ -97,7 +96,7 @@ class _ChatPageState extends State<ChatPage> {
                   clipBehavior: Clip.hardEdge,
                   color: Colors.transparent,
                   child: IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.send,
                       color: Colors.blueAccent,
                     ),

@@ -18,7 +18,7 @@ class Chat {
       id: snapshot.id,
       name: snapshot['name'],
       users: List<String>.from(snapshot['users']),
-      userNames: [], // Initialize to empty list
+      userNames: [], 
     );
   }
 
@@ -30,9 +30,6 @@ class Chat {
     };
   }
 }
-
-
-
 
 
 class Message {

@@ -20,9 +20,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   User? _user;
-
   int _currentIndex = 0;
-  
+
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -36,7 +35,6 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         _user = user;
       });
-      print(_user);
     });
   }
   @override
@@ -47,7 +45,7 @@ class _MyAppState extends State<MyApp> {
         if (snapshot.connectionState == ConnectionState.active) {
           final User? user = snapshot.data;
           return MaterialApp(
-            title: 'Hovedopgave - 2023',
+            title: 'App til idrætsforening',
             theme: ThemeData(
               primarySwatch: Colors.blue,
               visualDensity: VisualDensity.adaptivePlatformDensity,

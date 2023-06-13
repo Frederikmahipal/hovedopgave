@@ -18,7 +18,5 @@ class AuthRepository {
     await _auth.signOut();
   }
 
-
-
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 }

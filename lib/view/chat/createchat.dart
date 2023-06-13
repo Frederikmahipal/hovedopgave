@@ -22,10 +22,10 @@ class _CreateChatPageState extends State<CreateChatPage> {
   @override
   void initState() {
     super.initState();
-    final user = _userRepository.getCurrentUser() ?? null;
+    final user = _userRepository.getCurrentUser();
     setState(() {
       if (user != null) {
-        _userId = user.uid!;
+        _userId = user.uid;
       } else {
         _userId = null;
       }
@@ -33,7 +33,6 @@ class _CreateChatPageState extends State<CreateChatPage> {
     _userRepository.getAllUsers().then((users) {
       setState(() {
         _users = users;
-        print('USERS: $_users');
       });
     });
   }
@@ -82,7 +81,6 @@ class _CreateChatPageState extends State<CreateChatPage> {
                 onChanged: (value) {
                   setState(() {
                     _selectedUserId = value?.uid;
-                    print('SELECTED USER: $value');
                   });
                 },
               ),
@@ -94,7 +92,6 @@ class _CreateChatPageState extends State<CreateChatPage> {
                     if (_selectedUserId != null) {
                       users.add(_selectedUserId!);
                     }
-                    print('USERS: $users');
                     await _chatRepository.createChat(_name, users);
                     Navigator.pop(context);
                   }

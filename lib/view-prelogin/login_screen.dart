@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign In'),
+        title: const Text('Log ind'),
       ),
       body: Form(
         key: _formKey,
@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter your email';
+                  return 'indtast din email';
                 }
                 return null;
               },
@@ -41,18 +41,18 @@ class _LoginScreenState extends State<LoginScreen> {
             TextFormField(
               controller: _passwordController,
               decoration: const InputDecoration(
-                labelText: 'Password',
+                labelText: 'Adgangskode',
               ),
               obscureText: true,
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter your password';
+                  return 'Indtast din adgangskode';
                 }
                 return null;
               },
             ),
             ElevatedButton( 
-              child: const Text('Sign In'),
+              child: const Text('Log ind'),
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   try {
@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     MaterialPageRoute(builder: (context) => signupScreen())
                   );
                 },
-                child: Text("Don't have an account? Sign up here")),
+                child: Text("Opret konto")),
           ],
         ),
       ),

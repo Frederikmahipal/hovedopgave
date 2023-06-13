@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final displayName = snapshot.data!;
-              final welcomeMessage = 'Velkommen, $displayName ';
+              final welcomeMessage = 'Velkommen $displayName ';
               return Text(welcomeMessage);
             } else {
               return const Text(welcomeMessage);

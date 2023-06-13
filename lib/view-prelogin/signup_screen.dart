@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hovedopgave_app/view-prelogin/login_screen.dart';
 import '../repository/user_repository.dart';
 
 class signupScreen extends StatefulWidget {
@@ -18,7 +19,7 @@ class _SignupScreenState extends State<signupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registration'),
+        title: const Text('Oprettelse'),
       ),
       body: Form(
         key: _formKey,
@@ -27,11 +28,11 @@ class _SignupScreenState extends State<signupScreen> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: 'Name',
+                labelText: 'Navn',
               ),
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter your name';
+                  return 'Indtast dit navn';
                 }
                 return null;
               },
@@ -43,7 +44,7 @@ class _SignupScreenState extends State<signupScreen> {
               ),
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter your email';
+                  return 'indtast email';
                 }
                 return null;
               },
@@ -56,13 +57,13 @@ class _SignupScreenState extends State<signupScreen> {
               obscureText: true,
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter your password';
+                  return 'indtast adgangskode';
                 }
                 return null;
               },
             ),
             ElevatedButton(
-              child: const Text('Register'),
+              child: const Text('Opret dig'),
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   try {
@@ -72,7 +73,10 @@ class _SignupScreenState extends State<signupScreen> {
                     );
                     User? user = result.user;
                     await _userRepository.createUser(user!.uid, _nameController.text, _emailController.text);
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
                   } catch (error) {
                     print(error);
                   }

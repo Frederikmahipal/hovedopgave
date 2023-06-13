@@ -24,16 +24,16 @@ class _CustomNavBarState extends State<CustomNavBar> {
       onTap: widget.onTap,
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+          icon: Icon(Icons.group),
+          label: 'Hold',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.chat_rounded),
-          label: 'chat',
+          label: 'Chat',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
-          label: 'Settings',
+          label: 'Indstillinger',
         ),
       ],
     );

@@ -8,6 +8,13 @@ class ChatRepository {
   final UserRepository _userRepository = UserRepository();
   final _chatCollection = FirebaseFirestore.instance.collection('chats');
 
+  
+  Future<void> createChat(String name, List<String> users) async {
+    final chatDoc = _chatCollection.doc();
+    final chatData = {'name': name, 'users': users};
+    await chatDoc.set(chatData);
+  }
+
   Stream<List<Chat>> getChatsForUser(String userId) {
     return _firestore
         .collection('chats')
@@ -18,7 +25,6 @@ class ChatRepository {
   }
 
   Stream<List<Message>> getMessagesForChat(String chatId) {
-  print('Getting messages for chat $chatId');
   return _firestore
       .collection('chats')
       .doc(chatId)
@@ -30,21 +36,9 @@ class ChatRepository {
     querySnapshot.docs.forEach((DocumentSnapshot documentSnapshot) {
       messages.add(Message.fromSnapshot(documentSnapshot));
     });
-    print('Received ${messages.length} messages');
     return messages;
   });
 }
-
-
-Future<String> deleteChat(String chatId) async {
-  await _firestore
-      .collection('chats')
-      .doc(chatId)
-      .delete();
-  return chatId;
-}
-
-
 
   Future<void> sendMessage(String chatId, String message, String senderId) async {
     final messageDoc =
@@ -56,12 +50,5 @@ Future<String> deleteChat(String chatId) async {
       'timestamp': FieldValue.serverTimestamp(),
     };
     await messageDoc.set(messageData);
-  }
-
-
-  Future<void> createChat(String name, List<String> users) async {
-    final chatDoc = _chatCollection.doc();
-    final chatData = {'name': name, 'users': users};
-    await chatDoc.set(chatData);
   }
 }
