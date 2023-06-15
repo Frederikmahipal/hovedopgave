@@ -52,11 +52,11 @@ class _CreateChatPageState extends State<CreateChatPage> {
             children: <Widget>[
               TextFormField(
                 decoration: const InputDecoration(
-                  hintText: 'Enter chat name',
+                  hintText: 'Navngiv chat',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter chat name';
+                    return 'Indtast navn på chat';
                   }
                   return null;
                 },
@@ -70,7 +70,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
               DropdownButtonFormField<User>(
                 value: null,
                 decoration: const InputDecoration(
-                  hintText: 'Select user',
+                  hintText: 'Vælg modtager',
                 ),
                 items: _users.map((user) {
                   return DropdownMenuItem<User>(
@@ -96,7 +96,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Create Chat'),
+                child: const Text('Opret Chat'),
               ),
             ],
           ),

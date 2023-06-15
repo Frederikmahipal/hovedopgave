@@ -12,7 +12,6 @@ class TeamRepository {
     bool teamExists = await checkDuplicateTeamName(teamName);
 
     if (teamExists) {
-      print('Team already exists with name: $teamName');
       return false;
     }
 
@@ -22,12 +21,9 @@ class TeamRepository {
       'teamInfo': teamInfo,
       'members': [userId]
     });
-
     if (teamDocRef.id != null) {
-      print('Team created with ID: \${teamDocRef.id}');
       return true;
     } else {
-      print('Error creating team');
       return false;
     }
   }
@@ -46,8 +42,6 @@ class TeamRepository {
       'joinedAt': FieldValue.serverTimestamp(),
     });
   }
-
- 
 
   Future<List<Map<String, dynamic>>> getAllTeams() async {
     QuerySnapshot querySnapshot =
@@ -80,43 +74,35 @@ class TeamRepository {
   }
 
   Future<List<Map<String, dynamic>>> getTeamsForUser(String memberId) async {
-  final teamsQuerySnapshot = await FirebaseFirestore.instance
-      .collectionGroup('members')
-      .where('userRef', isEqualTo: FirebaseFirestore.instance.doc('users/$memberId'))
-      .get();
+    final teamsQuerySnapshot = await FirebaseFirestore.instance
+        .collectionGroup('members')
+        .where('userRef',
+            isEqualTo: FirebaseFirestore.instance.doc('users/$memberId'))
+        .get();
 
-  final List<Map<String, dynamic>> teamsList = [];
-  for (final memberDoc in teamsQuerySnapshot.docs) {
-    final teamDocRef = memberDoc.reference.parent.parent;
-    if (teamDocRef != null) {
-      final teamDocSnapshot = await teamDocRef.get();
-      final teamData = teamDocSnapshot.data();
-      if (teamData != null) {
-        final teamId = teamDocSnapshot.id;
-        teamData['teamID'] = teamId;
-        teamsList.add(teamData);
+    final List<Map<String, dynamic>> teamsList = [];
+    for (final memberDoc in teamsQuerySnapshot.docs) {
+      final teamDocRef = memberDoc.reference.parent.parent;
+      if (teamDocRef != null) {
+        final teamDocSnapshot = await teamDocRef.get();
+        final teamData = teamDocSnapshot.data();
+        if (teamData != null) {
+          final teamId = teamDocSnapshot.id;
+          teamData['teamID'] = teamId;
+          teamsList.add(teamData);
+        }
       }
     }
+
+    return teamsList;
   }
 
-  return teamsList;
-}
-
-
-
-
-Future<bool> deleteTeam(String teamId) async {
-  try {
-    await FirebaseFirestore.instance
-        .collection('teams')
-        .doc(teamId)
-        .delete();
-    return true;
-  } catch (e) {
-    print('Error deleting team: $e');
-    return false;
+  Future<bool> deleteTeam(String teamId) async {
+    try {
+      await FirebaseFirestore.instance.collection('teams').doc(teamId).delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
-}
-
-
 }

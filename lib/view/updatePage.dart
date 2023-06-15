@@ -16,44 +16,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   final _emailController = TextEditingController();
   final _userRepository = UserRepository();
 
-  void _updateUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      String name = _nameController.text.trim();
-      String email = _emailController.text.trim();
-      try {
-        await user.updateDisplayName(name);
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({'name': name, 'email': email});
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated')),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
-      }
-    }
-  }
-
-  void _deleteUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      String uid = user.uid;
-      try {
-        await _userRepository.deleteUser(uid);
-        await user.delete();
-        Navigator.pop(context);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
-        
-      }
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -120,4 +83,47 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       ),
     );
   }
+
+  void _updateUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String name = _nameController.text.trim();
+      String email = _emailController.text.trim();
+      try {
+        await user.updateDisplayName(name);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'name': name, 'email': email});
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profil Opdateret')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    }
+  }
+
+  void _deleteUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      try {
+        await _userRepository.deleteUser(uid);
+        await user.delete();
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+        
+      }
+    }
+  }
+
+
 }
+
+

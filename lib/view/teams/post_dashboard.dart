@@ -104,7 +104,7 @@ class _PostDashboardState extends State<PostDashboard> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                 if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
+                  return Text('Kunne ikke indlæse kommentarer');
                 }
 
                 if (!snapshot.hasData) {
@@ -126,7 +126,6 @@ class _PostDashboardState extends State<PostDashboard> {
                         formattedDateTime =
                             DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
                       } catch (e) {
-                        print('Error formatting timestamp: $e');
                       }
                     }
                     return Card(

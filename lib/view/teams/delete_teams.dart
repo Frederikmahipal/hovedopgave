@@ -51,7 +51,7 @@ class DeleteTeamPage extends StatelessWidget {
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('Error loading teams'),
+              child: Text('Kunne ikke indlæse hold'),
             );
           } else {
             return Center(

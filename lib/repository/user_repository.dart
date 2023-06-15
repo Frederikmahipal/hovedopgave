@@ -10,13 +10,13 @@ class UserRepository {
   static String? _selectedUserId;
 
   Future<void> createUser(String uid, String name, String email) async {
-  await userCollection.doc(uid).set({
-    'uid': uid,
-    'name': name,
-    'email': email,
-    'isAdmin': false,
-  });
-}
+    await userCollection.doc(uid).set({
+      'uid': uid,
+      'name': name,
+      'email': email,
+      'isAdmin': false,
+    });
+  }
 
   Future<void> updateUser(String uid, String name, String email) async {
     await userCollection.doc(uid).update({
@@ -26,6 +26,7 @@ class UserRepository {
   }
 
   Future<void> deleteUser(String uid) async {
+    User? user;
     await userCollection.doc(uid).delete();
   }
 
@@ -48,7 +49,6 @@ class UserRepository {
       final data = doc.data() as Map<String, dynamic>;
       final user = MyUser.User.fromJson(data);
       users.add(user);
-      print('UID: ${user.uid}');
     });
     return users;
   }
@@ -73,7 +73,7 @@ class UserRepository {
     }
   }
 
-    Future<List<String>> getUserNames(List<String> userIds) async {
+  Future<List<String>> getUserNames(List<String> userIds) async {
     List<String> userNames = [];
     for (String userId in userIds) {
       String userName = await getUserNameById(userId);
@@ -91,8 +91,6 @@ class UserRepository {
       return '';
     }
   }
-
-  
 
   String? getSelectedUserId() {
     return _selectedUserId;
